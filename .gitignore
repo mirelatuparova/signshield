@@ -32,3 +32,7 @@ scripts/output/
 supabase/.temp/
 DESIGN_BRIEF_*.md
 FIRST_SESSION_*.md
+
+# Локална dev-tool конфигурация — не за клиентското repo
+.bolt/
+.claude/settings.local.json
