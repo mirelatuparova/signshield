@@ -48,12 +48,12 @@ export default function SignInForm({ onStartRecovery, onShowSignup }: SignInForm
       <div className="flex flex-1 flex-col justify-center">
         <div className="w-full max-w-sm">
           <h1 className="text-2xl font-medium leading-snug text-neutral-900">Добре дошли</h1>
-          <p className="mt-1.5 text-sm text-neutral-500">
+          <p className="mt-2.5 text-sm leading-relaxed text-neutral-500">
             Използвайте Face ID, Touch ID, passkey или друг метод на устройството си, за да
             влезете сигурно — без пароли за помнене.
           </p>
 
-          <div className="mt-8 flex flex-col gap-3">
+          <div className="mt-8 flex flex-col gap-4">
             {errorMessage && (
               <div role="alert" className="rounded-lg bg-red-50 px-3 py-2.5 text-sm text-red-600">
                 {errorMessage}
@@ -90,7 +90,7 @@ export default function SignInForm({ onStartRecovery, onShowSignup }: SignInForm
       </div>
 
       {/* Footer — навигация към регистрация */}
-      <div className="w-full max-w-sm">
+      <div className="mt-8 w-full max-w-sm">
         <div className="flex items-center gap-3">
           <div className="flex-1 border-t border-neutral-200" />
           <span className="text-xs text-neutral-400">нямате акаунт?</span>
@@ -99,7 +99,7 @@ export default function SignInForm({ onStartRecovery, onShowSignup }: SignInForm
         <button
           type="button"
           onClick={onShowSignup}
-          className="mt-3 w-full text-center text-sm font-medium text-indigo-800 transition-colors hover:text-indigo-900"
+          className="mt-4 w-full text-center text-sm font-medium text-indigo-800 transition-colors hover:text-indigo-900"
         >
           Създайте акаунт
         </button>

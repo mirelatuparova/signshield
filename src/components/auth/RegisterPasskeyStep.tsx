@@ -94,14 +94,14 @@ export default function RegisterPasskeyStep({ isNewUser, needsDisplayName, onDon
         <div className="flex justify-center">
           <Logo size="md" withLabel={false} />
         </div>
-        <h2 className="mt-5 text-lg font-semibold text-neutral-900">Последна стъпка</h2>
-        <p className="mt-2 text-sm leading-relaxed text-neutral-600">
+        <h2 className="mt-6 text-lg font-semibold text-neutral-900">Последна стъпка</h2>
+        <p className="mt-2.5 text-sm leading-relaxed text-neutral-600">
           Email-ът е потвърден. Сега закачи passkey към профила си, за да можеш да влизаш без
           парола следващия път.
         </p>
 
         {showNameField && status !== 'registering' && (
-          <div className="mt-5 text-left">
+          <div className="mt-6 text-left">
             <label htmlFor="display-name" className="block text-sm font-medium text-neutral-700">
               Как да те наричаме?
             </label>
@@ -112,7 +112,7 @@ export default function RegisterPasskeyStep({ isNewUser, needsDisplayName, onDon
               maxLength={50}
               value={displayName}
               onChange={(event) => setDisplayName(event.target.value)}
-              className="mt-1 w-full rounded-xl border border-neutral-200 bg-white/80 px-3.5 py-2.5 text-sm shadow-sm transition-colors focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100"
+              className="mt-1.5 w-full rounded-xl border border-neutral-200 bg-white/80 px-3.5 py-2.5 text-sm shadow-sm transition-colors focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100"
               placeholder="напр. Иван"
             />
           </div>
@@ -129,7 +129,7 @@ export default function RegisterPasskeyStep({ isNewUser, needsDisplayName, onDon
         <button
           onClick={handleRegister}
           disabled={status === 'registering' || (showNameField && !displayName.trim())}
-          className="mt-5 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 text-sm font-medium text-white shadow-[0_4px_14px_-2px_rgba(79,70,229,0.4)] transition-all hover:shadow-[0_6px_20px_-2px_rgba(79,70,229,0.5)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+          className="mt-6 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 text-sm font-medium text-white shadow-[0_4px_14px_-2px_rgba(79,70,229,0.4)] transition-all hover:shadow-[0_6px_20px_-2px_rgba(79,70,229,0.5)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {status === 'registering' ? (
             <>
@@ -146,7 +146,7 @@ export default function RegisterPasskeyStep({ isNewUser, needsDisplayName, onDon
 
         <button
           onClick={handleSignOut}
-          className="mt-3 text-sm text-neutral-400 hover:text-neutral-700"
+          className="mt-4 text-sm text-neutral-400 hover:text-neutral-700"
         >
           Изход (довърши по-късно)
         </button>

@@ -48,7 +48,7 @@ export default function SignUpForm() {
 
   if (step === 'link-sent') {
     return (
-      <div className="flex flex-col gap-3 text-sm text-neutral-600">
+      <div className="flex flex-col gap-4 text-sm leading-relaxed text-neutral-600">
         <p>
           Пратихме линк за потвърждение на <span className="font-medium">{email}</span>.
         </p>
@@ -61,7 +61,7 @@ export default function SignUpForm() {
   }
 
   return (
-    <form onSubmit={handleSendLink} className="flex flex-col gap-4">
+    <form onSubmit={handleSendLink} className="flex flex-col gap-5">
       <div>
         <label htmlFor="display-name" className="block text-sm font-medium text-neutral-700">
           Как да те наричаме?
@@ -74,7 +74,7 @@ export default function SignUpForm() {
           value={displayName}
           onChange={(event) => setDisplayName(event.target.value)}
           disabled={isBusy}
-          className="mt-1 w-full rounded-xl border border-neutral-200 bg-white/80 px-3.5 py-2.5 text-sm shadow-sm transition-colors focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100"
+          className="mt-1.5 w-full rounded-xl border border-neutral-200 bg-white/80 px-3.5 py-2.5 text-sm shadow-sm transition-colors focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100"
           placeholder="напр. Иван"
         />
       </div>
@@ -90,12 +90,12 @@ export default function SignUpForm() {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           disabled={isBusy}
-          className="mt-1 w-full rounded-xl border border-neutral-200 bg-white/80 px-3.5 py-2.5 text-sm shadow-sm transition-colors focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100"
+          className="mt-1.5 w-full rounded-xl border border-neutral-200 bg-white/80 px-3.5 py-2.5 text-sm shadow-sm transition-colors focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100"
           placeholder="ti@example.com"
         />
       </div>
 
-      <p className="text-xs text-neutral-500">
+      <p className="-mt-1 text-xs leading-relaxed text-neutral-500">
         Email-ът се ползва само за потвърждение в момента на регистрация. След това влизаш
         винаги само с passkey.
       </p>
@@ -105,7 +105,7 @@ export default function SignUpForm() {
       <button
         type="submit"
         disabled={isBusy}
-        className="rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-2.5 font-medium text-white shadow-[0_4px_14px_-2px_rgba(79,70,229,0.4)] transition-all hover:shadow-[0_6px_20px_-2px_rgba(79,70,229,0.5)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-1 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-2.5 font-medium text-white shadow-[0_4px_14px_-2px_rgba(79,70,229,0.4)] transition-all hover:shadow-[0_6px_20px_-2px_rgba(79,70,229,0.5)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
       >
         {isBusy ? 'Пращаме линк...' : 'Изпрати линк за потвърждение'}
       </button>

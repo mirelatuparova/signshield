@@ -73,7 +73,7 @@ function SignupPanel({ onShowSignin }: { onShowSignin: () => void }) {
           <SignUpForm />
         </div>
       </div>
-      <div className="w-full max-w-sm">
+      <div className="mt-8 w-full max-w-sm">
         <div className="flex items-center gap-3">
           <div className="flex-1 border-t border-neutral-200" />
           <span className="text-xs text-neutral-400">вече имате акаунт?</span>
@@ -82,7 +82,7 @@ function SignupPanel({ onShowSignin }: { onShowSignin: () => void }) {
         <button
           type="button"
           onClick={onShowSignin}
-          className="mt-3 w-full text-center text-sm font-medium text-indigo-700 transition-colors hover:text-indigo-900"
+          className="mt-4 w-full text-center text-sm font-medium text-indigo-700 transition-colors hover:text-indigo-900"
         >
           Влезте
         </button>
@@ -98,7 +98,7 @@ function RecoveryPanel({ onCancel }: { onCancel: () => void }) {
       <Logo size="md" />
       <div className="flex flex-1 flex-col justify-center">
         <div className="w-full max-w-sm">
-          <h1 className="mb-4 text-2xl font-medium text-neutral-900">Възстановяване на достъп</h1>
+          <h1 className="mb-5 text-2xl font-medium text-neutral-900">Възстановяване на достъп</h1>
           <RecoveryFlow onCancel={onCancel} />
         </div>
       </div>
