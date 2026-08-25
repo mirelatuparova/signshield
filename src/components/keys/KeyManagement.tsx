@@ -120,14 +120,14 @@ export default function KeyManagement({ userId }: KeyManagementProps) {
   return (
     <div className="animate-fadeIn mx-auto max-w-4xl px-4 py-8 sm:px-6">
       {/* Заглавие + бутон */}
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-semibold text-neutral-800">Мои ключове</h1>
           <p className="mt-0.5 text-sm text-neutral-500">
             Криптографски ключове за подписване, защитени с вашия passkey.
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => { retrofitRunRef.current = false; load(); }}
             disabled={loading}

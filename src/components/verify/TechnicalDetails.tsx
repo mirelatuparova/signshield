@@ -82,8 +82,8 @@ function Section({ title, defaultOpen = false, children }: { title: string; defa
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex gap-2">
-      <span className="w-32 shrink-0 text-neutral-400">{label}</span>
+    <div className="flex flex-col gap-0.5 sm:flex-row sm:gap-2">
+      <span className="shrink-0 text-neutral-400 sm:w-32">{label}</span>
       <span className="flex items-center gap-1 break-all">{children}</span>
     </div>
   );

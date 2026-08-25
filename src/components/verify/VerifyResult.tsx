@@ -76,7 +76,7 @@ function roleLabel(signerIndex: number): string {
 function SignerRow({ signer }: { signer: SignerResult }) {
   const ok = signer.ecdsa.status === 'valid';
   return (
-    <div className="flex items-center gap-2 text-sm">
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
       {ok ? <CheckCircle size={14} className="shrink-0 text-green-600" aria-hidden="true" />
           : <XCircle size={14} className="shrink-0 text-red-600" aria-hidden="true" />}
       <span className="font-medium text-neutral-800">{signer.signerName || '—'}</span>
