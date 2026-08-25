@@ -238,7 +238,7 @@ export default function KeyManagement({ userId }: KeyManagementProps) {
 
       {/* Health status карти */}
       {activeKeys.length > 0 && (
-        <div className="mb-6 grid grid-cols-3 gap-3">
+        <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div className="glass-panel flex items-center gap-3 rounded-2xl px-4 py-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
               <KeyRound size={19} />

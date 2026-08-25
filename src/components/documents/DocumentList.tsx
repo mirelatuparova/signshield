@@ -327,7 +327,7 @@ export default function DocumentList({ userId, onNavigateKeys, onNavigateHowItWo
 
       {/* Statistics карти */}
       {documents.length > 0 && (
-        <div className="mb-8 grid grid-cols-3 gap-3">
+        <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
           <StatCard label="Общо документи" value={documents.length} icon={FileText} accent="indigo" />
           <StatCard label="Подписани" value={signedCount} icon={CheckCircle} accent="emerald" />
           <StatCard label="Чакащи подпис" value={pendingCount} icon={PenLine} accent="amber" />

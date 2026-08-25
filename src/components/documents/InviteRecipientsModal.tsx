@@ -210,6 +210,11 @@ function StepPositions({
     const rect = overlayRef.current!.getBoundingClientRect();
     return { x: e.clientX - rect.left, y: e.clientY - rect.top };
   };
+  const getRelPosTouch = (e: React.TouchEvent) => {
+    const rect = overlayRef.current!.getBoundingClientRect();
+    const t = e.touches[0] ?? e.changedTouches[0];
+    return { x: t.clientX - rect.left, y: t.clientY - rect.top };
+  };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     const p = getRelPos(e);
@@ -220,6 +225,18 @@ function StepPositions({
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!dragStartPx) return;
     setDragCurrentPx(getRelPos(e));
+  };
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const p = getRelPosTouch(e);
+    setDragStartPx(p);
+    setDragCurrentPx(p);
+    setZone(null);
+  };
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!dragStartPx) return;
+    e.preventDefault();
+    setDragCurrentPx(getRelPosTouch(e));
   };
   const finishDrag = () => {
     if (!dragStartPx || !dragCurrentPx || !overlayRef.current) { setDragStartPx(null); setDragCurrentPx(null); return; }
@@ -348,11 +365,15 @@ function StepPositions({
               <img src={dataUrl} alt={`Страница ${currentPage + 1}`} className="block w-full" draggable={false} />
               <div
                 ref={overlayRef}
-                className="absolute inset-0 cursor-crosshair"
+                className="absolute inset-0 cursor-crosshair touch-none"
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
                 onMouseUp={finishDrag}
                 onMouseLeave={finishDrag}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={finishDrag}
+                onTouchCancel={finishDrag}
               />
               {/* Drag-in-progress правоъгълник (сурови пиксели, без нужда от PDF-point конверсия) */}
               {dragStartPx && dragCurrentPx && (
