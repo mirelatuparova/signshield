@@ -14,6 +14,7 @@
     "generate-root-ca": "node scripts/generate-root-ca.mjs"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.3.0",
     "@noble/ed25519": "^3.1.0",
     "@noble/hashes": "^2.2.0",
     "@noble/post-quantum": "^0.6.1",

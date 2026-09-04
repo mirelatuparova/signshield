@@ -11,7 +11,7 @@
  *     ако документът е споделен (има claim-нат recipient), delete-ът минава
  *     през request→consent flow (migration 0020) вместо директно изтриване.
  */
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { lazy, Suspense, useEffect, useState, useCallback, useMemo } from 'react';
 import { FileText, Eye, RefreshCw, Trash2, PenLine, Download, CheckCircle, Sparkles, ArrowRight, Clock, Users, Ban, Check, X as XIcon } from 'lucide-react';
 import { fetchUserDocuments, getDocumentSignedUrl, softDeleteDocument, type DocumentRow } from '../../lib/documentUpload';
 import {
@@ -25,11 +25,23 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useMultiSignerActions } from '../../hooks/useMultiSignerActions';
 import type { SigningRequestWithRecipients, DeleteRequestRow, DeleteConsentRow } from '../../lib/types';
 import UploadDocument from './UploadDocument';
-import PdfViewer from './PdfViewer';
-import SignDocumentModal from './SignDocumentModal';
-import InviteRecipientsModal from './InviteRecipientsModal';
 import SigningRequestStatus from './SigningRequestStatus';
 import CancelSigningRequestButton from './CancelSigningRequestButton';
+
+// Lazy-заредени — теглят pdfjs-dist/pdf-lib (виждане/подписване на PDF), не бива
+// да са в bundle-а на списъка с документи, докато потребителят реално не отвори модал.
+const PdfViewer = lazy(() => import('./PdfViewer'));
+const SignDocumentModal = lazy(() => import('./SignDocumentModal'));
+const InviteRecipientsModal = lazy(() => import('./InviteRecipientsModal'));
+
+/** Fallback докато lazy модалът (PdfViewer/SignDocumentModal/InviteRecipientsModal) се тегли. */
+function ModalFallback() {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-white border-t-transparent" />
+    </div>
+  );
+}
 
 /** Активни (не финални) статуси на signing_requests — State B. */
 const ACTIVE_REQUEST_STATUSES = new Set(['draft', 'owner_signing', 'awaiting_recipients']);
@@ -599,48 +611,52 @@ export default function DocumentList({ userId, onNavigateKeys, onNavigateHowItWo
         </div>
       )}
 
-      {/* PDF Viewer */}
-      {viewingUrl && viewingDocId && (
-        <PdfViewer
-          url={viewingUrl}
-          filename={viewingName}
-          cacheId={viewingDocId}
-          onClose={() => { setViewingUrl(null); setViewingName(''); setViewingDocId(null); }}
-        />
-      )}
+      {/* Модалите по-долу теглят pdfjs-dist/pdf-lib на отделен chunk при първо
+          отваряне — ModalFallback покрива краткия миг докато chunk-ът се тегли. */}
+      <Suspense fallback={<ModalFallback />}>
+        {/* PDF Viewer */}
+        {viewingUrl && viewingDocId && (
+          <PdfViewer
+            url={viewingUrl}
+            filename={viewingName}
+            cacheId={viewingDocId}
+            onClose={() => { setViewingUrl(null); setViewingName(''); setViewingDocId(null); }}
+          />
+        )}
 
-      {/* Sign Document Modal */}
-      {signingDoc && (
-        <SignDocumentModal
-          documentId={signingDoc.id}
-          storagePath={signingDoc.storage_path}
-          filename={signingDoc.original_filename}
-          userId={userId}
-          onDone={() => {
-            setSigningDoc(null);
-            load();
-            showToast('Документът е подписан успешно.');
-          }}
-          onClose={() => setSigningDoc(null)}
-        />
-      )}
+        {/* Sign Document Modal */}
+        {signingDoc && (
+          <SignDocumentModal
+            documentId={signingDoc.id}
+            storagePath={signingDoc.storage_path}
+            filename={signingDoc.original_filename}
+            userId={userId}
+            onDone={() => {
+              setSigningDoc(null);
+              load();
+              showToast('Документът е подписан успешно.');
+            }}
+            onClose={() => setSigningDoc(null)}
+          />
+        )}
 
-      {/* Invite Recipients Modal (multi-signer) */}
-      {invitingDoc && (
-        <InviteRecipientsModal
-          documentId={invitingDoc.id}
-          storagePath={invitingDoc.storage_path}
-          filename={invitingDoc.original_filename}
-          userId={userId}
-          ownerEmail={ownerEmail}
-          onDone={(recipientCount) => {
-            setInvitingDoc(null);
-            load();
-            showToast(`Документът е подписан. Изпратени са ${recipientCount} ${recipientCount === 1 ? 'покана' : 'покани'}.`);
-          }}
-          onClose={() => setInvitingDoc(null)}
-        />
-      )}
+        {/* Invite Recipients Modal (multi-signer) */}
+        {invitingDoc && (
+          <InviteRecipientsModal
+            documentId={invitingDoc.id}
+            storagePath={invitingDoc.storage_path}
+            filename={invitingDoc.original_filename}
+            userId={userId}
+            ownerEmail={ownerEmail}
+            onDone={(recipientCount) => {
+              setInvitingDoc(null);
+              load();
+              showToast(`Документът е подписан. Изпратени са ${recipientCount} ${recipientCount === 1 ? 'покана' : 'покани'}.`);
+            }}
+            onClose={() => setInvitingDoc(null)}
+          />
+        )}
+      </Suspense>
 
       {/* Toast */}
       {toast && (

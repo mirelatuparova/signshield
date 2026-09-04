@@ -13,7 +13,7 @@
  *   обратно с ?recovery=1 в URL-а. App.tsx хваща това, изтрива старите passkey-и
  *   (чрез Edge Function) и показва RegisterPasskeyStep за нов passkey.
  */
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { supabase } from './lib/supabase';
 import { logAuditEvent } from './lib/auditLog';
@@ -22,14 +22,27 @@ import RegisterPasskeyStep from './components/auth/RegisterPasskeyStep';
 import UserMenu from './components/UserMenu';
 import NotificationBell from './components/NotificationBell';
 import Logo from './components/common/Logo';
-import DocumentList from './components/documents/DocumentList';
-import KeyManagement from './components/keys/KeyManagement';
-import VerifyPage from './components/verify/VerifyPage';
-import HowItWorksPage from './components/howItWorks/HowItWorksPage';
-import InvitationLandingPage from './components/invitations/InvitationLandingPage';
-import PendingInvitationsPage from './components/invitations/PendingInvitationsPage';
 import { usePendingInvitationsCount } from './hooks/usePendingInvitationsCount';
 import { type ActiveTab, initialTabFromRequest } from './lib/tabNavigation';
+
+// Lazy-заредени — всеки от тях тегли тежки зависимости (pdfjs-dist, pdf-lib,
+// @noble/post-quantum, @peculiar/x509), които не трябва да са в главния бъндъл,
+// докато потребителят реално не отвори съответния таб/route.
+const DocumentList = lazy(() => import('./components/documents/DocumentList'));
+const KeyManagement = lazy(() => import('./components/keys/KeyManagement'));
+const VerifyPage = lazy(() => import('./components/verify/VerifyPage'));
+const HowItWorksPage = lazy(() => import('./components/howItWorks/HowItWorksPage'));
+const InvitationLandingPage = lazy(() => import('./components/invitations/InvitationLandingPage'));
+const PendingInvitationsPage = lazy(() => import('./components/invitations/PendingInvitationsPage'));
+
+/** Fallback докато lazy chunk-ът се тегли — центриран spinner, съответства на другите loading state-ове в App.tsx. */
+function TabFallback() {
+  return (
+    <div className="flex min-h-[40vh] items-center justify-center text-neutral-400">
+      Зареждане...
+    </div>
+  );
+}
 
 /**
  * Проверява дали текущият URL съдържа ?recovery=1.
@@ -75,7 +88,11 @@ function AppContent() {
 
   // /verify е публична страница — показва се без auth, дори на не-логнати потребители
   if (window.location.pathname === '/verify') {
-    return <VerifyPage standalone />;
+    return (
+      <Suspense fallback={<TabFallback />}>
+        <VerifyPage standalone />
+      </Suspense>
+    );
   }
 
   // /invite/:recipientId — за разлика от /verify, НЕ е early return преди
@@ -199,7 +216,11 @@ function AppContent() {
   // регистрирал passkey (клон по-горе); ако не е логнат изобщо,
   // InvitationLandingPage сам показва not_logged_in + вграден AuthScreen.
   if (inviteMatch) {
-    return <InvitationLandingPage recipientId={inviteMatch[1]} />;
+    return (
+      <Suspense fallback={<TabFallback />}>
+        <InvitationLandingPage recipientId={inviteMatch[1]} />
+      </Suspense>
+    );
   }
 
   // Не е логнат → показваме auth екрана (login / signup / recovery избор).
@@ -257,13 +278,15 @@ function MainApp({ userId }: { userId: string }) {
         </nav>
       </header>
 
-      {activeTab === 'documents'    && <DocumentList userId={userId} onNavigateKeys={() => setActiveTab('keys')} onNavigateHowItWorks={() => setActiveTab('how-it-works')} />}
-      {activeTab === 'keys'         && <KeyManagement userId={userId} />}
-      {activeTab === 'invitations'  && userEmail && (
-        <PendingInvitationsPage userId={userId} userEmail={userEmail} onInvitationsChanged={refreshPendingCount} />
-      )}
-      {activeTab === 'verify'       && <VerifyPage standalone={false} />}
-      {activeTab === 'how-it-works' && <HowItWorksPage />}
+      <Suspense fallback={<TabFallback />}>
+        {activeTab === 'documents'    && <DocumentList userId={userId} onNavigateKeys={() => setActiveTab('keys')} onNavigateHowItWorks={() => setActiveTab('how-it-works')} />}
+        {activeTab === 'keys'         && <KeyManagement userId={userId} />}
+        {activeTab === 'invitations'  && userEmail && (
+          <PendingInvitationsPage userId={userId} userEmail={userEmail} onInvitationsChanged={refreshPendingCount} />
+        )}
+        {activeTab === 'verify'       && <VerifyPage standalone={false} />}
+        {activeTab === 'how-it-works' && <HowItWorksPage />}
+      </Suspense>
     </main>
   );
 }
